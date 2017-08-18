@@ -1,15 +1,20 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   Container,
-  Grid,
-  Segment,
-  Button
+  Grid
 } from 'semantic-ui-react'
 import './Dashboard.css'
+
+import { logout } from '../../actions'
 
 const Column = Grid.Column
 
 class Dashboard extends Component {
+  handleLogout = () => {
+    this.props.dispatch(logout())
+  }
+
   render() {
     return (
       <Container className="Dashboard">
@@ -17,6 +22,7 @@ class Dashboard extends Component {
           <Column />
           <Column>
             Dashboard
+            <div onClick={this.handleLogout}>Sign out</div>
           </Column>
           <Column />
         </Grid>
@@ -25,4 +31,10 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard
+const mapStateToProps = state => {
+  return {
+
+  }
+}
+
+export default connect(mapStateToProps)(Dashboard)

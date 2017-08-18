@@ -1,16 +1,13 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   Route,
   Switch,
   Redirect,
   BrowserRouter as Router
 } from 'react-router-dom'
-import { connect } from 'react-redux'
 
-import {
-  Dimmer,
-  Loader
-} from 'semantic-ui-react'
+import { setAuthStatus } from '../actions/'
 
 import PrivateRoute from './PrivateRoute/PrivateRoute'
 import PublicRoute from './PublicRoute/PublicRoute'
@@ -21,7 +18,7 @@ import Dashboard from './Dashboard/Dashboard'
 
 class App extends Component {
   componentDidMount() {
-
+    this.props.dispatch(setAuthStatus())
   }
 
   componentWillUnmount() {
@@ -29,13 +26,13 @@ class App extends Component {
   }
 
   render() {
-    return this.props.loading
-    ? <Dimmer active inverted><Loader /></Dimmer>
-    : (
+    const { authed } = this.props
+
+    return (
       <Router>
         <Switch>
-          <PublicRoute auth={false} exact path="/login" component={Login} />
-          <PrivateRoute auth={true} exact path="/dashboard" component={Dashboard} />
+          <PublicRoute auth={authed} exact path="/login" component={Login} />
+          <PrivateRoute auth={authed} exact path="/dashboard" component={Dashboard} />
           <Redirect exact from="/" to="/login" />
           <Route component={NotFound} />
         </Switch>
@@ -46,8 +43,7 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    loading: state.authReducer.get('loading'),
-    auth: state.authReducer.get('auth')
+    authed: state.authReducer.get('authed')
   }
 }
 
