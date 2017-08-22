@@ -12,6 +12,8 @@ import {
 } from 'semantic-ui-react'
 import './Login.css'
 
+import Logo from '../Logo/Logo'
+
 import { login } from '../../actions'
 
 const Column = Grid.Column
@@ -47,6 +49,8 @@ class Login extends Component {
               <Dimmer inverted active={loading}>
                 <Loader />
               </Dimmer>
+
+              <Logo />
 
               {
                 message

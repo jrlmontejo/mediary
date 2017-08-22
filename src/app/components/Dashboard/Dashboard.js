@@ -5,6 +5,7 @@ import {
   Grid
 } from 'semantic-ui-react'
 import './Dashboard.css'
+import { db } from '../../../config/stitch'
 
 import { logout } from '../../actions'
 
@@ -16,6 +17,10 @@ class Dashboard extends Component {
   }
 
   render() {
+    db.createCollection('test').then(() => {
+      console.log('Test')
+    })
+
     return (
       <Container className="Dashboard">
         <Grid padded stackable doubling columns={3}>
