@@ -1,7 +1,7 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
 
-const error = require('../config/error')
+const error = require('../utils/error')
 const User = require('../models/User')
 const router = express.Router()
 
@@ -15,7 +15,9 @@ router.post('/', async (req, res) => {})
 // Get user data
 // PRIVATE
 //
-router.get('/', async (req, res) => {})
+router.get('/', async (req, res) => {
+  res.send('Werking auth')
+})
 
 //
 // Update user data
@@ -45,7 +47,11 @@ router.post('/token', async (req, res) => {
     return res.status(400).json(error('INVALID_PASSWORD'))
   }
 
-  const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' })
+  const token = await jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' })
+
+  if (!token) {
+    return res.status(500).json(error())
+  }
 
   res.status(200).json({ token })
 })
