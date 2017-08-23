@@ -11,9 +11,9 @@ router.post('/token', async (req, res) => {
     password: req.body.password
   }
 
-  const checkLogin = await User.verifyCredentials(credentials)
+  const isUserValid = await User.verifyCredentials(credentials)
 
-  res.json({ message: checkLogin })
+  res.json({ message: isUserValid })
 })
 
 module.exports = router
