@@ -1,6 +1,7 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
 
+const error = require('../config/error')
 const User = require('../models/User')
 const router = express.Router()
 
@@ -32,9 +33,21 @@ router.post('/token', async (req, res) => {
     password: req.body.password
   }
 
-  const isUserValid = await User.verifyCredentials(credentials)
+  const user = await User.findByEmail(credentials.email)
 
-  res.json({ message: isUserValid })
+  if (!user) {
+    return res.status(404).json(error('USER_NOT_FOUND'))
+  }
+
+  const isPasswordValid = await user.verifyPassword(credentials.password)
+
+  if (!isPasswordValid) {
+    return res.status(400).json(error('INVALID_PASSWORD'))
+  }
+
+  const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' })
+
+  res.status(200).json({ token })
 })
 
 //

@@ -51,13 +51,30 @@ userSchema.pre('save', async function(next) {
 })
 
 //
-// Check login credentials
+// Find user by email
 //
-userSchema.statics.verifyCredentials = async function({ email, password }) {
-  const user = await this.findOne({ email })
-  const isPasswordValid = await bcrypt.compare(password, user.password)
+userSchema.statics.findByEmail = async function(email) {
+  try {
+    const user = await this.findOne({ email })
+    return user || null
+  } catch(err) {
+    console.error(err)
+    return null
+  }
+}
 
-  return isPasswordValid
+//
+// Verify password
+//
+userSchema.methods.verifyPassword = async function(password) {
+  try {
+    const user = this
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+    return isPasswordValid
+  } catch(err) {
+    console.error(err)
+    return null
+  }
 }
 
 module.exports = mongoose.model('User', userSchema)
