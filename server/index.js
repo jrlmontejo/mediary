@@ -13,6 +13,7 @@ const User = require('./models/User')
 
 // include routers
 const userRouter = require('./routers/user')
+const usersRouter = require('./routers/users')
 
 // initialize API
 const app = express()
@@ -32,6 +33,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/user', userRouter)
+app.use('/users', usersRouter)
 
 app.get('/', (req, res) => {
   res.json({

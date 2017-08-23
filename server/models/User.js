@@ -15,7 +15,17 @@ const userSchema = Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  role: {
+    type: String,
+    required: true,
+    enum: ['ADMIN', 'EDITOR', 'AUTHOR']
+  },
+  photo: String,
+  displayName: String,
+  firstName: String,
+  lastName: String,
+  website: String
 }, {
   timestamps: true
 })
