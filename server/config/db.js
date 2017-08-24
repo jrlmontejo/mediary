@@ -1,6 +1,12 @@
 const mongoose = require('mongoose')
 
-const uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
+const user = process.env.DB_USER
+const password = process.env.DB_PASSWORD
+const host = process.env.DB_HOST
+const port = process.env.DB_PORT
+const name = process.env.DB_NAME
+
+const uri = `mongodb://${user}:${password}@${host}:${port}/${name}`
 mongoose.connect(uri, { useMongoClient: true })
 
 const db = mongoose.connection

@@ -37,7 +37,6 @@ const loginUserSuccess = state => (
   state.setIn([ 'login', 'loading' ], false)
 )
 
-// TODO: Display error message
 const loginUserFail = (state, message) => (
   state.mergeDeep({
     login: {

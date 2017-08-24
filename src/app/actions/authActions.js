@@ -37,8 +37,9 @@ export const login = (email, password) => dispatch => {
   dispatch(loginUser())
 
   return client.login(email, password)
-  .then(res => {
-    console.log(res)
+  .then(res => client.userProfile())
+  .then(userData => {
+    console.log(userData)
     dispatch(loginUserSuccess())
     dispatch(setAuthStatus())
   })
