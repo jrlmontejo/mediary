@@ -8,12 +8,16 @@ const router = express.Router()
 // Get all users
 // PRIVATE, IS_ADMIN
 //
-router.get('/', async (req, res) => {})
+router.get('/', async (req, res) => {
+
+})
 
 //
 // Get a single user
 // PRIVATE, IS_ADMIN
 //
-router.get('/:userId', async (req, res) => {})
+router.get('/:userId', async (req, res) => {
+
+})
 
 module.exports = router

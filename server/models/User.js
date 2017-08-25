@@ -21,10 +21,18 @@ const userSchema = Schema({
     required: true,
     enum: ['ADMIN', 'EDITOR', 'AUTHOR']
   },
+  firstName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true
+  },
   photo: String,
   displayName: String,
-  firstName: String,
-  lastName: String,
   website: String
 }, {
   timestamps: true

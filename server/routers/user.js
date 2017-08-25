@@ -9,14 +9,45 @@ const router = express.Router()
 // Register new user
 // PUBLIC
 //
-router.post('/', async (req, res) => {})
+router.post('/', async (req, res) => {
+  const userData = req.body
+
+  const user = new User({
+    email: userData.email,
+    password: userData.password,
+    role: userData.role,
+    firstName: userData.firstName,
+    lastName: userData.lastName,
+    website: userData.website
+  })
+
+  try {
+    await user.save(user)
+
+    // TODO: Send email verification link
+
+    res.status(204).send()
+  } catch(err) {
+    console.error(err)
+
+    if (err.message.indexOf('duplicate key error') !== -1) {
+      return res.status(409).json(error('USER_ALREADY_EXISTS'))
+    }
+
+    if (err.hasOwnProperty('errors')) {
+      return res.status(400).json(error('SAVE_FAILED', err.errors))
+    }
+
+    res.status(500).json(error())
+  }
+})
 
 //
 // Get user data
 // PRIVATE
 //
 router.get('/', async (req, res) => {
-  res.send('Werking auth')
+  res.json(req.decoded._doc)
 })
 
 //
