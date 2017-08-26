@@ -1,4 +1,5 @@
 const publicRoutes = {
+  '/users/login': ['POST'],
   '/users/token': ['POST']
 }
 

@@ -6,6 +6,9 @@ const errorCodes = {
   AUTH_REQUIRED: 'Authorization header required',
   INVALID_AUTH_TYPE: 'Invalid authorization type supplied in Authorization header',
   INVALID_AUTH_TOKEN: 'Invalid token supplied in Authorization header',
+  AUTH_TOKEN_EXPIRED: 'Token supplied in Authorization header is expired',
+  INVALID_REFRESH_TOKEN: 'Invalid refresh token',
+  REFRESH_TOKEN_EXPIRED: 'Refresh token is expired',
   USER_ALREADY_EXISTS: 'A user with that email already exists',
   SAVE_FAILED: 'Unable to save/update because of validation errors'
 }

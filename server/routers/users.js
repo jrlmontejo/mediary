@@ -2,7 +2,9 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 
 const error = require('../utils/error')
+const jwtPayload = require('../utils/jwtPayload')
 const User = require('../models/User')
+const RefreshToken = require('../models/RefreshToken')
 const router = express.Router()
 
 //
@@ -95,7 +97,7 @@ router.get('/:userId', async (req, res) => {
     }
 
     res.json({
-      id: user._id.toString(),
+      id: user._id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -109,11 +111,11 @@ router.get('/:userId', async (req, res) => {
 })
 
 //
-// POST /users/token
-// Authenticate user and return an auth token
+// POST /users/login
+// Authenticate user via email/password and return access and refresh tokens
 // PUBLIC
 //
-router.post('/token', async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const credentials = {
       email: req.body.email,
@@ -132,15 +134,60 @@ router.post('/token', async (req, res) => {
       return res.status(400).json(error('INVALID_PASSWORD'))
     }
 
-    const payload = {
-      id: user._id.toString(),
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role
+    const token = await jwt.sign(
+      jwtPayload(user),
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    )
+
+    if (!token) {
+      return res.status(500).json(error())
     }
 
-    const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10s' })
+    const refreshToken = new RefreshToken()
+    refreshToken.email = user.email
+    await refreshToken.save()
+
+    res.json({ token, refreshToken: refreshToken.value })
+  } catch(err) {
+    console.error(err)
+
+    // validation errors
+    if (err.hasOwnProperty('errors')) {
+      return res.status(400).json(error('SAVE_FAILED', err.errors))
+    }
+
+    res.status(500).json(error())
+  }
+})
+
+router.post('/token', async (req, res) => {
+  try {
+    const email = req.body.email
+    const value = req.body.refreshToken
+
+    const refreshToken = await RefreshToken.findOne({ email, value })
+
+    if (!refreshToken) {
+      return res.status(400).json(error('INVALID_REFRESH_TOKEN'))
+    }
+
+    if (refreshToken.expiresOn < Date.now()) {
+      await RefreshToken.remove({ email, value })
+      return res.status(400).json(error('REFRESH_TOKEN_EXPIRED'))
+    }
+
+    const user = await User.findByEmail(email)
+
+    if (!user) {
+      return res.status(404).json(error('USER_NOT_FOUND'))
+    }
+
+    const token = await jwt.sign(
+      jwtPayload(user),
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    )
 
     if (!token) {
       return res.status(500).json(error())
