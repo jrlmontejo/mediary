@@ -1,7 +1,6 @@
 'use strict'
 
 require('dotenv').config()
-require('./config/db')
 require('./config/promisify')
 
 const express = require('express')
@@ -9,13 +8,13 @@ const bodyParser = require('body-parser')
 const logger = require('morgan')
 
 const cors = require('./middlewares/cors')
+const db = require('./middlewares/db')
 const auth = require('./middlewares/auth')
 
 // include models
 const User = require('./models/User')
 
 // include routers
-const userRouter = require('./routers/user')
 const usersRouter = require('./routers/users')
 const publicRoutes = require('./config/publicRoutes')
 
@@ -26,9 +25,9 @@ app.use(logger('dev'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors)
+app.use(db)
 app.use(auth.unless({ path: publicRoutes }))
 
-app.use('/user', userRouter)
 app.use('/users', usersRouter)
 
 app.get('/', (req, res) => {

@@ -1,8 +1,5 @@
 const publicRoutes = {
-  '/user': ['POST'],
-  '/user/token': ['POST'],
-  '/user/email/forgot-password': ['POST'],
-  '/user/email/verified': ['POST']
+  '/users/token': ['POST']
 }
 
 const createRouteList = routes => (

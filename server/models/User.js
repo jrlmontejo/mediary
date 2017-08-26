@@ -41,7 +41,7 @@ const userSchema = Schema({
 //
 // Hash password before saving
 //
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function hashPassword(next) {
   try {
     const user = this
 
@@ -52,9 +52,9 @@ userSchema.pre('save', async function(next) {
     const hash = await bcrypt.hash(user.password, SALT_WORK_FACTOR)
     user.password = hash
 
-    return next()
+    next()
   } catch(err) {
-    return next(err)
+    next(err)
   }
 })
 

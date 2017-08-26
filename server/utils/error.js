@@ -1,4 +1,5 @@
 const errorCodes = {
+  DB_CONNECTION_ERROR: 'Cannot establish a connection with the database',
   SERVER_ERROR: 'There is an error with the server',
   USER_NOT_FOUND: 'User does not exist on the database',
   INVALID_PASSWORD: 'User supplied an invalid password',
