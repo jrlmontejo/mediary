@@ -133,13 +133,14 @@ router.post('/token', async (req, res) => {
     }
 
     const payload = {
+      id: user._id.toString(),
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
       role: user.role
     }
 
-    const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' })
+    const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10s' })
 
     if (!token) {
       return res.status(500).json(error())
