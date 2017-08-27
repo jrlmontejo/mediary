@@ -172,11 +172,6 @@ router.post('/token', async (req, res) => {
       return res.status(400).json(error('INVALID_REFRESH_TOKEN'))
     }
 
-    if (refreshToken.expiresOn < Date.now()) {
-      await RefreshToken.remove({ email, value })
-      return res.status(400).json(error('REFRESH_TOKEN_EXPIRED'))
-    }
-
     const user = await User.findByEmail(email)
 
     if (!user) {

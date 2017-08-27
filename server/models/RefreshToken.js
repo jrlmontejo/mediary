@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const randtoken = require('rand-token')
-const ms = require('ms')
 
 const Schema = mongoose.Schema
 
@@ -13,16 +12,16 @@ const refreshTokenSchema = Schema({
     type: String,
     required: true
   },
-  expiresOn: {
+  createdAt: {
     type: Date,
-    required: true
+    default: Date.now,
+    expires: '1m'
   }
 })
 
 refreshTokenSchema.pre('validate', function generateRefreshToken(next) {
   const token = this
   token.value = randtoken.uid(256)
-  token.expiresOn = Date.now() + ms('1y')
   next()
 })
 
