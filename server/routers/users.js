@@ -137,7 +137,7 @@ router.post('/login', async (req, res) => {
     const token = await jwt.sign(
       jwtPayload(user),
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      { expiresIn: process.env.JWT_TTL }
     )
 
     if (!token) {
@@ -181,7 +181,7 @@ router.post('/token', async (req, res) => {
     const token = await jwt.sign(
       jwtPayload(user),
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      { expiresIn: process.env.JWT_TTL }
     )
 
     if (!token) {

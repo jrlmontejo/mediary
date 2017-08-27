@@ -15,7 +15,7 @@ const refreshTokenSchema = Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: '1m'
+    expires: process.env.REFRESH_TOKEN_TTL
   }
 })
 
