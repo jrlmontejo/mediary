@@ -13,7 +13,17 @@ const router = express.Router()
 //
 router.get('/', async (req, res) => {
   try {
-    const users = await User.find()
+    const limitValue = Number(req.query.limit)
+    const limit = (Number.isInteger(limitValue) && limitValue > 0)
+    ? limitValue
+    : 10
+
+    const lastId = req.query.lastId || ''
+    const query = lastId
+    ? { _id: { $lt: lastId } }
+    : {}
+
+    const users = await User.find(query).limit(limit).sort({ _id: -1 })
     const userList = []
 
     users.forEach(user => {
