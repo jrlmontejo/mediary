@@ -4,6 +4,8 @@ const path = require('path')
 const mongoose = require('mongoose')
 
 const error = require('../utils/error')
+const propTypes = require('../utils/propTypes')
+const clearModelData = require('../utils/clearModelData')
 
 const Schema = mongoose.Schema
 const router = express.Router()
@@ -30,13 +32,40 @@ router.post('/:name', async (req, res) => {
     schema.set('timestamps', true)
     schema.set('collection', name)
 
+    const requiredProps = []
+
     template.fields.forEach(field => {
-      schema.add({ name: String })
+      const prop = { [field.name]: {} }
+
+      prop[field.name].type = propTypes(field.type)
+
+      if (field.options.required) {
+        prop[field.name].required = true
+        requiredProps.push(field.name)
+      }
+
+      // field specific options
+      switch(field.type) {
+        case 'select':
+          prop[field.name].enum = Object.keys(field.options.items)
+          break
+      }
+
+      schema.add(prop)
     })
 
+    // clear model data existing from memory
+    clearModelData('Entry')
+
     const Entry = mongoose.model('Entry', schema)
-    const entry = new Entry({
-      name: "Testing!"
+    const entry = new Entry()
+
+    const entryData = req.body
+
+    Object.keys(entryData).forEach(prop => {
+      if (requiredProps.includes(prop)) {
+        entry[prop] = entryData[prop]
+      }
     })
 
     await entry.save()
@@ -47,6 +76,11 @@ router.post('/:name', async (req, res) => {
 
     if (err.code === 'ENOENT') {
       return res.status(404).json(error('NOT_FOUND'))
+    }
+
+    // validation errors
+    if (err.hasOwnProperty('errors')) {
+      return res.status(400).json(error('SAVE_FAILED', err.errors))
     }
 
     res.status(500).json(error())

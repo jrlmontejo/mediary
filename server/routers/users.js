@@ -111,7 +111,7 @@ router.put('/:userId', async (req, res) => {
     }
 
     const userData = req.body
-    const validFields = [
+    const requiredProps = [
       'email',
       'role',
       'website',
@@ -120,7 +120,7 @@ router.put('/:userId', async (req, res) => {
     ]
 
     Object.keys(userData).forEach(prop => {
-      if (validFields.includes(prop)) {
+      if (requiredProps.includes(prop)) {
         user[prop] = userData[prop]
       }
     })
