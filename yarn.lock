@@ -2509,6 +2509,10 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
+express-prettify@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/express-prettify/-/express-prettify-0.0.8.tgz#a8d80aec4f2171ee1bdaec80e3406b84ffb76acb"
+
 express-unless@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/express-unless/-/express-unless-0.3.1.tgz#2557c146e75beb903e2d247f9b5ba01452696e20"

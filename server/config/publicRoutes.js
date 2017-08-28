@@ -1,13 +1,11 @@
-const publicRoutes = {
-  '/users/login': ['POST'],
-  '/users/token': ['POST']
-}
+const publicRoutes = [
+  ['/users/token', ['POST']],
+  [/^\/users\/.*/, ['GET']]
+]
 
-const createRouteList = routes => (
-  Object.keys(routes).map(route => ({
-    url: route,
-    methods: routes[route]
-  }))
-)
+const routes = publicRoutes.map(route => ({
+  url: route[0],
+  methods: route[1]
+}))
 
-module.exports = createRouteList(publicRoutes)
+module.exports = routes

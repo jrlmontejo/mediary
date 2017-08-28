@@ -63,7 +63,7 @@ userSchema.pre('save', async function hashPassword(next) {
 //
 userSchema.statics.findByEmail = async function(email) {
   try {
-    const user = await this.findOne({ email })
+    const user = await this.findOne({ email: email.toLowerCase() })
     return user || null
   } catch(err) {
     console.error(err)

@@ -2,7 +2,6 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 
 const error = require('../utils/error')
-const jwtPayload = require('../utils/jwtPayload')
 const User = require('../models/User')
 const RefreshToken = require('../models/RefreshToken')
 const router = express.Router()
@@ -111,31 +110,65 @@ router.get('/:userId', async (req, res) => {
 })
 
 //
-// POST /users/login
-// Authenticate user via email/password and return access and refresh tokens
+// POST /users/token
+// Authenticate user via email/password or via refresh tokens and return access and refresh tokens
 // PUBLIC
 //
-router.post('/login', async (req, res) => {
+router.post('/token', async (req, res) => {
   try {
-    const credentials = {
-      email: req.body.email,
-      password: req.body.password
+    const email = req.body.email || ''
+    const password = req.body.password || ''
+    const refreshToken = req.body.refreshToken || ''
+
+    if (!email || (!password && !refreshToken)) {
+      return res.status(400).json(error('INVALID_REQUEST'))
     }
 
-    const user = await User.findByEmail(credentials.email)
+    const user = await User.findByEmail(email)
 
     if (!user) {
       return res.status(404).json(error('USER_NOT_FOUND'))
     }
 
-    const isPasswordValid = await user.verifyPassword(credentials.password)
+    const response = {}
 
-    if (!isPasswordValid) {
-      return res.status(400).json(error('INVALID_PASSWORD'))
+    if (password) {
+      // validate password
+      const isPasswordValid = await user.verifyPassword(password)
+
+      if (!isPasswordValid) {
+        return res.status(400).json(error('INVALID_PASSWORD'))
+      }
+
+      // generate a new refresh token
+      const newRefreshToken = new RefreshToken()
+      newRefreshToken.email = user.email
+
+      await newRefreshToken.save()
+
+      response.refreshToken = newRefreshToken.value
+    } else if (refreshToken) {
+      // validate refresh token
+      const currRefreshToken = await RefreshToken.findOne({
+        email: user.email,
+        value: refreshToken
+      })
+
+      if (!currRefreshToken) {
+        return res.status(400).json(error('INVALID_REFRESH_TOKEN'))
+      }
+    }
+
+    const payload = {
+      id: user._id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role
     }
 
     const token = await jwt.sign(
-      jwtPayload(user),
+      payload,
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_TTL }
     )
@@ -144,11 +177,8 @@ router.post('/login', async (req, res) => {
       return res.status(500).json(error())
     }
 
-    const refreshToken = new RefreshToken()
-    refreshToken.email = user.email
-    await refreshToken.save()
-
-    res.json({ token, refreshToken: refreshToken.value })
+    response.token = token
+    res.json(response)
   } catch(err) {
     console.error(err)
 
@@ -161,38 +191,13 @@ router.post('/login', async (req, res) => {
   }
 })
 
-router.post('/token', async (req, res) => {
-  try {
-    const email = req.body.email
-    const value = req.body.refreshToken
+//
+// POST /users/:userId/password
+// Update a user's password
+// PUBLIC
+//
+router.post('/:userId/password', async (req, res) => {
 
-    const refreshToken = await RefreshToken.findOne({ email, value })
-
-    if (!refreshToken) {
-      return res.status(400).json(error('INVALID_REFRESH_TOKEN'))
-    }
-
-    const user = await User.findByEmail(email)
-
-    if (!user) {
-      return res.status(404).json(error('USER_NOT_FOUND'))
-    }
-
-    const token = await jwt.sign(
-      jwtPayload(user),
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_TTL }
-    )
-
-    if (!token) {
-      return res.status(500).json(error())
-    }
-
-    res.json({ token })
-  } catch(err) {
-    console.error(err)
-    res.status(500).json(error())
-  }
 })
 
 module.exports = router
