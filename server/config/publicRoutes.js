@@ -1,6 +1,7 @@
 const publicRoutes = [
   ['/users/token', ['POST']],
-  [/^\/users\/.*/, ['GET']]
+  ['/users/password', ['POST']]
+  // [/^\/users\/.*/, ['GET']]
 ]
 
 const routes = publicRoutes.map(route => ({

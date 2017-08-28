@@ -32,7 +32,6 @@ const userSchema = Schema({
     trim: true
   },
   photo: String,
-  displayName: String,
   website: String
 }, {
   timestamps: true

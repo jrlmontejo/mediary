@@ -10,7 +10,8 @@ const errorCodes = {
   INVALID_REFRESH_TOKEN: 'Invalid refresh token or refresh token might be expired',
   USER_ALREADY_EXISTS: 'A user with that email already exists',
   INVALID_REQUEST: 'There are invalid or missing parameters on your request',
-  SAVE_FAILED: 'Unable to save/update because of validation errors'
+  SAVE_FAILED: 'Unable to save/update because of validation errors',
+  UNAUTHORIZED: 'Your user role is not permitted to perform this action'
 }
 
 module.exports = (errorCode = '', errorList = null) => {
