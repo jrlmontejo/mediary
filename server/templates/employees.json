@@ -1,0 +1,41 @@
+{
+  "name": "employees",
+  "label": {
+    "singular": "Employee",
+    "plural": "Employees"
+  },
+  "description": "List of employees",
+  "fields": [{
+    "name": "firstName",
+    "label": "First Name",
+    "type": "text",
+    "description": "First name of employee",
+    "options": {
+      "required": true,
+      "placeholder": "Joey"
+    }
+  }, {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "text",
+    "description": "Last name of employee",
+    "options": {
+      "required": true,
+      "placeholder": "Joe"
+    }
+  }, {
+    "name": "position",
+    "label": "Position",
+    "type": "select",
+    "description": "Position of employee",
+    "options": {
+      "required": true,
+      "items": {
+        "WEB_DEVELOPER": "Web Developer",
+        "ANDROID_DEVELOPER": "Android Developer"
+      }
+    }
+  }],
+  "createdAt": 1503930721566,
+  "updatedAt": 1503930721566
+}

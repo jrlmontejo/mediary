@@ -107,7 +107,7 @@ router.put('/:userId', async (req, res) => {
     const user = await User.findById(userId)
 
     if (!user) {
-      return res.status(404).json(error('USER_NOT_FOUND'))
+      return res.status(404).json(error('NOT_FOUND'))
     }
 
     const userData = req.body
@@ -156,7 +156,7 @@ router.get('/:userId', async (req, res) => {
     const user = await User.findById(userId)
 
     if (!user) {
-      return res.status(404).json(error('USER_NOT_FOUND'))
+      return res.status(404).json(error('NOT_FOUND'))
     }
 
     res.json({
@@ -191,7 +191,7 @@ router.post('/password', async (req, res) => {
     const user = await User.findByEmail(email)
 
     if (!user) {
-      return res.status(404).json(error('USER_NOT_FOUND'))
+      return res.status(404).json(error('NOT_FOUND'))
     }
 
     // validate password
@@ -230,7 +230,7 @@ router.post('/token', async (req, res) => {
     const user = await User.findByEmail(email)
 
     if (!user) {
-      return res.status(404).json(error('USER_NOT_FOUND'))
+      return res.status(404).json(error('NOT_FOUND'))
     }
 
     const payload = {

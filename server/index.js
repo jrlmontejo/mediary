@@ -16,6 +16,7 @@ const User = require('./models/User')
 
 // include routers
 const usersRouter = require('./routers/users')
+const collectionsRouter = require('./routers/collections')
 const publicRoutes = require('./config/publicRoutes')
 
 // initialize API
@@ -29,6 +30,7 @@ app.use(db)
 app.use(auth.unless({ path: publicRoutes }))
 
 app.use('/users', usersRouter)
+app.use('/collections', collectionsRouter)
 
 app.get('/', (req, res) => {
   res.json({

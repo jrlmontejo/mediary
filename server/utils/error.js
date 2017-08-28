@@ -1,7 +1,7 @@
 const errorCodes = {
   DB_CONNECTION_ERROR: 'Cannot establish a connection with the database',
   SERVER_ERROR: 'There is an error with the server',
-  USER_NOT_FOUND: 'User does not exist on the database',
+  NOT_FOUND: 'This entry does not exist in the database',
   INVALID_PASSWORD: 'User supplied an invalid password',
   AUTH_REQUIRED: 'Authorization header required',
   INVALID_AUTH_TYPE: 'Invalid authorization type supplied in Authorization header',
